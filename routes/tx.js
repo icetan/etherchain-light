@@ -83,9 +83,13 @@ router.get('/:tx', function(req, res, next) {
         callback(err, tx, receipt, traces);
       });
     }, function(tx, receipt, traces, callback) {
-      db.get(tx.to, function(err, value) {
-        callback(null, tx, receipt, traces, value);
-      });
+      if (tx.to == null) {
+        callback(null, tx, receipt, traces);
+      } else {
+        db.get(tx.to, function(err, value) {
+          callback(null, tx, receipt, traces, value);
+        });
+      }
     }
   ], function(err, tx, receipt, traces, source) {
     if (err) {
